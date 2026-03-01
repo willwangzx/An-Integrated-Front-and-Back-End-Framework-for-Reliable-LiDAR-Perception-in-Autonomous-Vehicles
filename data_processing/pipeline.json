@@ -1,0 +1,41 @@
+{
+  "pipeline": [
+    {
+      "type": "readers.text",
+      "filename": "kitti_frame.xyz",
+      "delimiter": " ",
+      "header": "X Y Z Intensity"
+    },
+
+    {
+      "type": "filters.range",
+      "limits": "Z[-5:5]"
+    },
+
+    {
+      "type": "filters.range",
+      "limits": "X[-80:80],Y[-80:80]"
+    },
+
+    {
+      "type": "filters.outlier",
+      "method": "statistical",
+      "mean_k": 8,
+      "multiplier": 2.0
+    },
+
+    {
+      "type": "filters.assign",
+      "assignment": "Intensity = clamp(Intensity, 0, 255)"
+    },
+
+    {
+      "type": "writers.las",
+      "filename": "kitti_frame.las",
+      "extra_dims": "Intensity=float",
+      "scale_x": 0.001,
+      "scale_y": 0.001,
+      "scale_z": 0.001
+    }
+  ]
+}
