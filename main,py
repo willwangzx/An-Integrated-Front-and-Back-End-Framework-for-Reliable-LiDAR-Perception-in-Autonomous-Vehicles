@@ -1,0 +1,54 @@
+import glob
+import open3d as o3d
+
+from src.config import *
+from src.lidar_loader import load_las
+from src.preprocessing import filter_range,remove_ground
+from src.voxelization import voxelize
+from src.reflectivity_map import build_reflectivity
+from src.clustering import cluster_objects
+from src.temporal_fusion import fuse_maps
+from src.bev_map import generate_bev
+from src.visualization import visualize_points,visualize_clusters
+
+maps=[]
+
+files=glob.glob("data/velodyne_points/las/*.las")
+
+def visualize(points):
+
+    pcd = o3d.geometry.PointCloud()
+
+    pcd.points = o3d.utility.Vector3dVector(points)
+
+    o3d.visualization.draw_geometries([pcd])
+
+for f in files:
+
+    points,intensity=load_las(f)
+
+    points,intensity=filter_range(points,intensity,MAX_RANGE)
+
+    points,intensity=remove_ground(points,intensity,GROUND_THRESHOLD)
+
+    voxels,voxel_intensity=voxelize(points,intensity,VOXEL_SIZE)
+
+    rmap=build_reflectivity(voxels,voxel_intensity)
+
+    maps.append(rmap)
+
+    clusters=cluster_objects(points,CLUSTER_EPS,CLUSTER_MIN_POINTS)
+
+    visualize_clusters(clusters)
+
+    fused=fuse_maps(maps)
+
+    bev=generate_bev(points)
+
+    visualize_points(points)
+
+    visualize(points)
+
+print("Perception pipeline finished")
+
+
