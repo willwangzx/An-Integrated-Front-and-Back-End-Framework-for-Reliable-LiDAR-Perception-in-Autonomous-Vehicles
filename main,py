@@ -1,50 +1,27 @@
-import glob
-
 from src.config import *
-from src.lidar_loader import load_las
-from src.preprocessing import filter_range,remove_ground,compensate_intensity
-from src.voxelization import voxelize
-from src.reflectivity_map import build_reflectivity,interpolate_reflectivity
-from src.clustering import cluster_objects
-from src.temporal_fusion import fuse_maps
-from src.bev_map import generate_bev
+from src.pipeline import LidarPerceptionPipeline, iter_lidar_frames
 from src.visualization import visualize_points,visualize_clusters
-from src.object_features import extract_object_features
+pipeline = LidarPerceptionPipeline()
 
-maps=[]
-
-files=sorted(glob.glob("data/velodyne_points/las/*.las"))
+files = iter_lidar_frames()
 
 for idx,f in enumerate(files):
 
-    points,intensity=load_las(f)
+    result = pipeline.process_frame(f)
+    points = result["points"]
+    clusters = result["clusters"]
+    object_features = result["object_features"]
 
-    if ENABLE_INTENSITY_COMP:
-        intensity=compensate_intensity(points,intensity,RANGE_ATTENUATION_ALPHA)
+    print(
+        f"Frame {idx}: points={points.shape[0]} "
+        f"clusters={len(clusters)} objects={len(object_features)}"
+    )
 
-    points,intensity=filter_range(points,intensity,MAX_RANGE)
-
-    points,intensity=remove_ground(points,intensity,GROUND_THRESHOLD)
-
-    voxels,voxel_intensity,voxel_counts=voxelize(points,intensity,VOXEL_SIZE)
-
-    rmap=build_reflectivity(voxels,voxel_intensity)
-
-    maps.append(rmap)
-    if FUSION_WINDOW>0 and len(maps)>FUSION_WINDOW:
-        maps=maps[-FUSION_WINDOW:]
-
-    clusters=cluster_objects(points,CLUSTER_EPS,CLUSTER_MIN_POINTS)
-
-    fused,stability=fuse_maps(maps,USE_EWMA_FUSION,EWMA_ALPHA)
-    fused=interpolate_reflectivity(fused,stability)
-
-    object_features=extract_object_features(clusters,fused,stability,VOXEL_SIZE)
-    print(f"Frame {idx}: clusters={len(clusters)} objects={len(object_features)}")
-
-    bev=generate_bev(points,BEV_RESOLUTION)
-
-    if ENABLE_VISUALIZATION and (VISUALIZE_EVERY_N==0 or idx%VISUALIZE_EVERY_N==0):
+    if (
+        ENABLE_VISUALIZATION
+        and points.shape[0] > 0
+        and (VISUALIZE_EVERY_N==0 or idx%VISUALIZE_EVERY_N==0)
+    ):
         visualize_clusters(clusters)
         visualize_points(points)
 

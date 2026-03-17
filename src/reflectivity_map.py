@@ -4,7 +4,7 @@ def build_reflectivity(voxels,intensity):
 
     for v,i in zip(voxels,intensity):
 
-        reflectivity[tuple(v)]=i
+        reflectivity[tuple(int(axis) for axis in v)]=float(i)
 
     return reflectivity
 
