@@ -1,7 +1,7 @@
 from collections import defaultdict
 import numpy as np
 
-def fuse_maps(maps):
+def fuse_maps(maps,use_ewma=False,ewma_alpha=0.6):
 
     fusion=defaultdict(list)
 
@@ -12,9 +12,19 @@ def fuse_maps(maps):
             fusion[k].append(v)
 
     fused={}
+    stability={}
+    n_frames=max(len(maps),1)
 
     for k,v in fusion.items():
 
-        fused[k]=np.mean(v)
+        values=np.array(v,dtype=np.float32)
+        if use_ewma and values.size>0:
+            ewma=values[0]
+            for val in values[1:]:
+                ewma=ewma_alpha*val+(1-ewma_alpha)*ewma
+            fused[k]=float(ewma)
+        else:
+            fused[k]=float(np.mean(values))
+        stability[k]=float(values.size/n_frames)
 
-    return fused
+    return fused,stability
