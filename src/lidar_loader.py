@@ -3,21 +3,19 @@ import numpy as np
 
 
 def load_las(file_path):
-
     las = laspy.read(file_path)
 
-    # 读取坐标
-    x = las.x
-    y = las.y
-    z = las.z
+    points = np.column_stack((las.x, las.y, las.z)).astype(np.float32, copy=False)
 
-    points = np.vstack((x, y, z)).T
-
-    # 读取反射强度
     if hasattr(las, "intensity"):
-        intensity = las.intensity.astype(np.float32)
-        intensity = intensity / (intensity.max() + 1e-6)
-    else:
-        intensity = np.ones(points.shape[0])
+        raw_intensity = np.asarray(las.intensity)
+        intensity = raw_intensity.astype(np.float32, copy=False)
 
-    return points, intensity
+        if np.issubdtype(raw_intensity.dtype, np.integer):
+            dtype_max = np.iinfo(raw_intensity.dtype).max
+            if dtype_max > 0:
+                intensity = intensity / dtype_max
+    else:
+        intensity = np.ones(points.shape[0], dtype=np.float32)
+
+    return points, intensity.astype(np.float32, copy=False)
