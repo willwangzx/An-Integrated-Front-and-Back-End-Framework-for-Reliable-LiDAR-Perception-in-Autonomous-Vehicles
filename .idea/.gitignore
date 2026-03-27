@@ -1,0 +1,14 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# ignore everything except specific suffixes
+*
+!*.py
+!*.cpp
+!*.h
+!*.md
+!*.ipynb
+!*.json
+!*.yaml
+!*.yml
+!*.gitignore
