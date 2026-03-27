@@ -1,0 +1,23 @@
+{
+  "num_frames": 21,
+  "mean_points_raw": 118282.71428571429,
+  "mean_points_after_ground": 62327.23809523809,
+  "mean_retention_ratio": 0.5277096417565057,
+  "mean_cluster_coverage": 0.9937296623882677,
+  "mean_noise_ratio": 0.0062703376117323305,
+  "mean_clusters": 58.04761904761905,
+  "mean_objects": 58.04761904761905,
+  "mean_cluster_compactness_m": 1.178766333606621,
+  "mean_silhouette": 0.07168235612057504,
+  "mean_davies_bouldin": 0.6951277852245373,
+  "mean_temporal_voxel_jaccard": 0.1360705930653045,
+  "mean_temporal_reflectivity_corr": 0.0,
+  "mean_centroid_shift_xy_m": 1.313532917272477,
+  "mean_effectiveness_score": 61.55504701407554,
+  "generated_at": "2026-03-26T16:57:27",
+  "pattern": "data/velodyne_points/las/*.las",
+  "warmup": 1,
+  "limit": 0,
+  "sample_size": 4000,
+  "note": "No ground-truth labels were used. Metrics and score are unsupervised proxies."
+}

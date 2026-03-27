@@ -1,0 +1,20 @@
+{
+  "num_frames": 1,
+  "frames": [
+    {
+      "frame": "0000000000",
+      "clusters": 55,
+      "exported": 54,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 4,
+        "Cyclist": 0
+      }
+    }
+  ],
+  "use_calib": false,
+  "out_dir": "kitti_predictions_bin\\data",
+  "score_thresh": 0.15,
+  "eps": 0.8,
+  "min_points": 15
+}

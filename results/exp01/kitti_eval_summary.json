@@ -1,0 +1,53 @@
+{
+  "run_name": "exp01",
+  "label_dir": "C:\\Users\\willw\\PycharmProjects\\Lidar\\kitti_predictions",
+  "pred_dir": "C:\\Users\\willw\\PycharmProjects\\Lidar\\kitti_predictions\\data",
+  "n_test_images": 7481,
+  "prepare_summary": {
+    "gt_copied": 0,
+    "gt_empty": 7481,
+    "pred_copied": 22,
+    "pred_empty": 7459,
+    "labels_found": 0,
+    "predictions_found": 22
+  },
+  "ap_summary": {
+    "car": {
+      "bev": {
+        "easy": 0.0,
+        "moderate": 0.0,
+        "hard": 0.0
+      },
+      "3d": {
+        "easy": 0.0,
+        "moderate": 0.0,
+        "hard": 0.0
+      }
+    },
+    "pedestrian": {
+      "bev": {
+        "easy": 0.0,
+        "moderate": 0.0,
+        "hard": 0.0
+      },
+      "3d": {
+        "easy": 0.0,
+        "moderate": 0.0,
+        "hard": 0.0
+      }
+    },
+    "cyclist": {
+      "bev": {
+        "easy": 0.0,
+        "moderate": 0.0,
+        "hard": 0.0
+      },
+      "3d": {
+        "easy": 0.0,
+        "moderate": 0.0,
+        "hard": 0.0
+      }
+    }
+  },
+  "generated_at": "2026-03-27T21:26:28"
+}

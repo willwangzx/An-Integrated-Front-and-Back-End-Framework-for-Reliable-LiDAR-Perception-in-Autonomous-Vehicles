@@ -1,0 +1,230 @@
+{
+  "num_frames": 22,
+  "frames": [
+    {
+      "frame": "0000000000",
+      "clusters": 55,
+      "exported": 54,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 4,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000001",
+      "clusters": 55,
+      "exported": 55,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 4,
+        "Cyclist": 1
+      }
+    },
+    {
+      "frame": "0000000002",
+      "clusters": 63,
+      "exported": 63,
+      "class_counts": {
+        "Car": 56,
+        "Pedestrian": 7,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000003",
+      "clusters": 62,
+      "exported": 62,
+      "class_counts": {
+        "Car": 55,
+        "Pedestrian": 6,
+        "Cyclist": 1
+      }
+    },
+    {
+      "frame": "0000000004",
+      "clusters": 69,
+      "exported": 69,
+      "class_counts": {
+        "Car": 61,
+        "Pedestrian": 6,
+        "Cyclist": 2
+      }
+    },
+    {
+      "frame": "0000000005",
+      "clusters": 73,
+      "exported": 72,
+      "class_counts": {
+        "Car": 66,
+        "Pedestrian": 3,
+        "Cyclist": 3
+      }
+    },
+    {
+      "frame": "0000000006",
+      "clusters": 73,
+      "exported": 73,
+      "class_counts": {
+        "Car": 67,
+        "Pedestrian": 6,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000007",
+      "clusters": 60,
+      "exported": 60,
+      "class_counts": {
+        "Car": 57,
+        "Pedestrian": 3,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000008",
+      "clusters": 54,
+      "exported": 54,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 4,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000009",
+      "clusters": 58,
+      "exported": 58,
+      "class_counts": {
+        "Car": 55,
+        "Pedestrian": 3,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000010",
+      "clusters": 50,
+      "exported": 48,
+      "class_counts": {
+        "Car": 45,
+        "Pedestrian": 3,
+        "Cyclist": 0
+      }
+    },
+    {
+      "frame": "0000000011",
+      "clusters": 55,
+      "exported": 55,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 4,
+        "Cyclist": 1
+      }
+    },
+    {
+      "frame": "0000000012",
+      "clusters": 54,
+      "exported": 54,
+      "class_counts": {
+        "Car": 44,
+        "Pedestrian": 7,
+        "Cyclist": 3
+      }
+    },
+    {
+      "frame": "0000000013",
+      "clusters": 54,
+      "exported": 54,
+      "class_counts": {
+        "Car": 47,
+        "Pedestrian": 5,
+        "Cyclist": 2
+      }
+    },
+    {
+      "frame": "0000000014",
+      "clusters": 56,
+      "exported": 56,
+      "class_counts": {
+        "Car": 53,
+        "Pedestrian": 2,
+        "Cyclist": 1
+      }
+    },
+    {
+      "frame": "0000000015",
+      "clusters": 51,
+      "exported": 51,
+      "class_counts": {
+        "Car": 46,
+        "Pedestrian": 1,
+        "Cyclist": 4
+      }
+    },
+    {
+      "frame": "0000000016",
+      "clusters": 58,
+      "exported": 57,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 3,
+        "Cyclist": 4
+      }
+    },
+    {
+      "frame": "0000000017",
+      "clusters": 57,
+      "exported": 57,
+      "class_counts": {
+        "Car": 50,
+        "Pedestrian": 4,
+        "Cyclist": 3
+      }
+    },
+    {
+      "frame": "0000000018",
+      "clusters": 53,
+      "exported": 53,
+      "class_counts": {
+        "Car": 46,
+        "Pedestrian": 5,
+        "Cyclist": 2
+      }
+    },
+    {
+      "frame": "0000000019",
+      "clusters": 55,
+      "exported": 55,
+      "class_counts": {
+        "Car": 44,
+        "Pedestrian": 6,
+        "Cyclist": 5
+      }
+    },
+    {
+      "frame": "0000000020",
+      "clusters": 54,
+      "exported": 54,
+      "class_counts": {
+        "Car": 49,
+        "Pedestrian": 3,
+        "Cyclist": 2
+      }
+    },
+    {
+      "frame": "0000000021",
+      "clusters": 55,
+      "exported": 55,
+      "class_counts": {
+        "Car": 48,
+        "Pedestrian": 4,
+        "Cyclist": 3
+      }
+    }
+  ],
+  "use_calib": false,
+  "out_dir": "kitti_predictions\\data",
+  "score_thresh": 0.15,
+  "eps": 0.8,
+  "min_points": 15
+}

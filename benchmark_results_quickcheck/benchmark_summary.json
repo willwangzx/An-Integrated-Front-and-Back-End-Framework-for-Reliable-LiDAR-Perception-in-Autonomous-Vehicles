@@ -1,0 +1,35 @@
+{
+  "num_frames_benchmarked": 4,
+  "mean_total_s": 2.2225143249961548,
+  "median_total_s": 2.232828799984418,
+  "p95_total_s": 2.332866464991821,
+  "mean_fps": 0.4508100742542578,
+  "median_fps": 0.44792711885151293,
+  "mean_clusters": 62.25,
+  "mean_objects": 62.25,
+  "mean_points_after_ground": 59776.25,
+  "stage_mean_s": {
+    "load_s": 0.01789607500541024,
+    "intensity_comp_s": 0.0022997500200290233,
+    "range_filter_s": 0.003549024957465008,
+    "ground_remove_s": 0.0012460250000003725,
+    "voxelize_s": 0.373901625018334,
+    "reflectivity_build_s": 0.026802824984770268,
+    "cluster_s": 1.5606838500243612,
+    "fusion_s": 0.1376860000018496,
+    "interpolate_s": 2.0500156097114086e-06,
+    "feature_extract_s": 0.0768890249892138,
+    "bev_s": 0.003357575013069436,
+    "total_s": 2.2225143249961548
+  },
+  "cluster_count_distribution": {
+    "55": 1,
+    "63": 1,
+    "62": 1,
+    "69": 1
+  },
+  "generated_at": "2026-03-26T16:41:39",
+  "pattern": "data/velodyne_points/las/*.las",
+  "warmup": 1,
+  "limit": 5
+}

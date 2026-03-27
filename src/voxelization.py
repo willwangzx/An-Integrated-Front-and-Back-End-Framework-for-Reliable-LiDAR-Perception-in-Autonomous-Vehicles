@@ -1,5 +1,4 @@
 import numpy as np
-from collections import defaultdict
 
 def voxelize(points,intensity,voxel_size):
 
@@ -9,26 +8,21 @@ def voxelize(points,intensity,voxel_size):
         empty_counts = np.empty((0,), dtype=np.int32)
         return empty_idx, empty_float, empty_counts
 
-    voxel_dict = defaultdict(list)
+    voxel_indices = np.floor(points / voxel_size).astype(np.int32, copy=False)
+    voxels, inverse = np.unique(voxel_indices, axis=0, return_inverse=True)
 
-    for p,i in zip(points,intensity):
+    counts = np.bincount(inverse, minlength=voxels.shape[0]).astype(np.int32, copy=False)
+    summed_intensity = np.bincount(
+        inverse,
+        weights=intensity.astype(np.float64, copy=False),
+        minlength=voxels.shape[0],
+    )
 
-        idx = tuple(np.floor(p/voxel_size).astype(int))
+    nonzero = counts > 0
+    intensities = np.zeros(voxels.shape[0], dtype=np.float32)
+    intensities[nonzero] = (summed_intensity[nonzero] / counts[nonzero]).astype(
+        np.float32,
+        copy=False,
+    )
 
-        voxel_dict[idx].append(i)
-
-    voxels=[]
-    intensities=[]
-    counts=[]
-
-    for k,v in voxel_dict.items():
-
-        voxels.append(k)
-        intensities.append(np.mean(v))
-        counts.append(len(v))
-
-    voxels=np.asarray(voxels, dtype=np.int32)
-    intensities=np.asarray(intensities, dtype=np.float32)
-    counts=np.asarray(counts, dtype=np.int32)
-
-    return voxels,intensities,counts
+    return voxels, intensities, counts
