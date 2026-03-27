@@ -17,14 +17,15 @@ for idx,f in enumerate(files):
         f"clusters={len(clusters)} objects={len(object_features)}"
     )
 
-    if (
-        ENABLE_VISUALIZATION
-        and points.shape[0] > 0
-        and (VISUALIZE_EVERY_N==0 or idx%VISUALIZE_EVERY_N==0)
-    ):
-        visualize_clusters(clusters)
-        visualize_points(points)
+    # if (
+    #     ENABLE_VISUALIZATION
+    #     and points.shape[0] > 0
+    #     and (VISUALIZE_EVERY_N==0 or idx%VISUALIZE_EVERY_N==0)
+    # ):
+    #     visualize_clusters(clusters)
+    #     visualize_points(points)
 
 print("Perception pipeline finished")
+
 
 
