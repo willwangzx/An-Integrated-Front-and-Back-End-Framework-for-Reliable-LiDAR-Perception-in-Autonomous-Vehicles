@@ -3,39 +3,39 @@
 This repository now includes `kitti_export.py` to export per-frame KITTI prediction files.
 It also includes `kitti_devkit_eval.py` to run the bundled C++ KITTI devkit and summarize AP.
 
-## 1) Quick export from existing LAS frames
-
-Use this when you want a fast local check and already have converted `.las` frames:
-
-```bash
-python kitti_export.py   --pattern "data/velodyne_points/las/*.las"   --out-dir "kitti_predictions/data"
-```
-
-This creates:
-
-- `kitti_predictions/data/<frame>.txt`
-- `kitti_predictions/kitti_export_summary.json`
-
-Note: this mode does not use camera calibration and exports pseudo boxes in LiDAR frame.
-
-## 2) KITTI-style camera-coordinate export (recommended for real evaluation)
+## 1) KITTI-calibrated export (recommended)
 
 Use original KITTI object benchmark files:
 
-- point clouds: `training/velodyne/*.bin`
-- calibration: `training/calib/*.txt`
-
-Run:
-
 ```bash
-python kitti_export.py   --bin-dir "<KITTI_ROOT>/training/velodyne"   --calib-dir "<KITTI_ROOT>/training/calib"   --out-dir "kitti_predictions/data"
+python kitti_export.py \
+  --bin-dir "<KITTI_ROOT>/training/velodyne" \
+  --calib-dir "<KITTI_ROOT>/training/calib" \
+  --out-dir "kitti_predictions/data"
 ```
 
-You can limit frames while debugging:
+Optional debug subset:
 
 ```bash
-python kitti_export.py   --bin-dir "<KITTI_ROOT>/training/velodyne"   --calib-dir "<KITTI_ROOT>/training/calib"   --out-dir "kitti_predictions/data"   --limit 50
+python kitti_export.py \
+  --bin-dir "<KITTI_ROOT>/training/velodyne" \
+  --calib-dir "<KITTI_ROOT>/training/calib" \
+  --out-dir "kitti_predictions/data" \
+  --limit 200
 ```
+
+## 2) Uncalibrated debug export (not for AP)
+
+Only for quick local checks:
+
+```bash
+python kitti_export.py \
+  --pattern "data/velodyne_points/las/*.las" \
+  --out-dir "kitti_predictions/data" \
+  --allow-uncalibrated
+```
+
+This mode can emit KITTI-invalid fields (`alpha=-10`, invalid 2D bbox), so do not use it for official AP.
 
 ## 3) Run KITTI devkit evaluation
 
@@ -48,6 +48,8 @@ python kitti_devkit_eval.py \
   --run-name "exp01" \
   --compile
 ```
+
+`--n-test-images` defaults to `0` and is auto-inferred from the contiguous overlap of labels/predictions.
 
 This prepares:
 

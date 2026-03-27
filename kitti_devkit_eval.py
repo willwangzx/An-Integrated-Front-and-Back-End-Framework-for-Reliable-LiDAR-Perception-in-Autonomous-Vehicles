@@ -33,10 +33,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--n-test-images",
         type=int,
-        default=7518,
+        default=0,
         help=(
-            "Number of indexed frame files required by this devkit build "
-            "(default matches evaluate_object.cpp constant)."
+            "Number of indexed frames to evaluate. "
+            "Use 0 to auto-infer matching contiguous prefix from labels and predictions."
         ),
     )
     parser.add_argument(
@@ -110,6 +110,54 @@ def discover_indexed_txt_files(directory: Path) -> Dict[int, Path]:
         if stem.isdigit():
             mapping[int(stem)] = file_path
     return mapping
+
+
+def first_nonempty_line(path: Path) -> str:
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if line.strip():
+            return line.strip()
+    return ""
+
+
+def validate_label_dir(label_map: Dict[int, Path]) -> None:
+    if not label_map:
+        raise ValueError("No indexed label files found in --label-dir.")
+
+    sample_file = label_map[sorted(label_map.keys())[0]]
+    sample_line = first_nonempty_line(sample_file)
+    if not sample_line:
+        raise ValueError(f"Sample label file is empty: {sample_file}")
+
+    token_count = len(sample_line.split())
+    if token_count != 15:
+        raise ValueError(
+            "Ground-truth label_2 format looks invalid for KITTI devkit. "
+            f"Expected 15 fields per object line, found {token_count} in {sample_file}. "
+            "Did you accidentally pass prediction files as --label-dir?"
+        )
+
+
+def infer_matching_n_test_images(
+    label_map: Dict[int, Path],
+    pred_map: Dict[int, Path],
+) -> int:
+    if not pred_map:
+        raise ValueError("No indexed prediction files found in --pred-dir.")
+
+    label_ids = set(label_map.keys())
+    pred_ids = set(pred_map.keys())
+    if not (label_ids & pred_ids):
+        raise ValueError("No overlapping frame ids between labels and predictions.")
+
+    n = 0
+    while (n in label_ids) and (n in pred_ids):
+        n += 1
+    if n <= 0:
+        raise ValueError(
+            "Unable to infer a contiguous matching split from frame 000000. "
+            "Provide --n-test-images explicitly for your split."
+        )
+    return n
 
 
 def ensure_parent(path: Path) -> None:
@@ -276,6 +324,30 @@ def main() -> None:
         raise FileNotFoundError(f"Label directory not found: {label_dir}")
     if not pred_dir.exists():
         raise FileNotFoundError(f"Prediction directory not found: {pred_dir}")
+    if label_dir.resolve() == pred_dir.resolve():
+        raise ValueError(
+            "--label-dir and --pred-dir point to the same location. "
+            "Pass real KITTI training/label_2 for --label-dir."
+        )
+
+    label_map = discover_indexed_txt_files(label_dir)
+    pred_map = discover_indexed_txt_files(pred_dir)
+    validate_label_dir(label_map)
+    if not pred_map:
+        raise ValueError("No indexed prediction files found in --pred-dir.")
+
+    n_test_images = args.n_test_images
+    if n_test_images <= 0:
+        n_test_images = infer_matching_n_test_images(label_map, pred_map)
+        print(f"[step] Auto-inferred matching n_test_images={n_test_images}")
+
+    missing_label_ids = [i for i in range(n_test_images) if i not in label_map]
+    if missing_label_ids:
+        raise ValueError(
+            "Missing ground-truth label files within selected evaluation range. "
+            f"First missing id: {missing_label_ids[0]:06d}. "
+            "Ensure your split and --n-test-images match the label set."
+        )
 
     if args.compile:
         print("[step] Compiling KITTI devkit evaluator...")
@@ -288,7 +360,7 @@ def main() -> None:
         label_dir=label_dir,
         pred_dir=pred_dir,
         run_name=args.run_name,
-        n_test_images=args.n_test_images,
+        n_test_images=n_test_images,
     )
     print(
         "[ok] Prepared files: "
@@ -302,7 +374,7 @@ def main() -> None:
         run_name=args.run_name,
         bash_path=args.bash_path,
         exe_path=exe_path,
-        n_test_images=args.n_test_images,
+        n_test_images=n_test_images,
     )
     if stdout.strip():
         print(stdout.strip())
@@ -316,7 +388,7 @@ def main() -> None:
         "run_name": args.run_name,
         "label_dir": str(label_dir.resolve()),
         "pred_dir": str(pred_dir.resolve()),
-        "n_test_images": args.n_test_images,
+        "n_test_images": n_test_images,
         "prepare_summary": prep,
         "ap_summary": ap_summary,
         "generated_at": datetime.now().isoformat(timespec="seconds"),
