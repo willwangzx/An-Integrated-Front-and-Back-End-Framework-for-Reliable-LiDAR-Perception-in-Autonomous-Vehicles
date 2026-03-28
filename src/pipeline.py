@@ -2,17 +2,22 @@ from collections import deque
 from glob import glob
 
 from src.bev_map import generate_bev
-from src.clustering import cluster_objects
+from src.clustering import cluster_objects, cluster_objects_adaptive
 from src.config import (
+    ADAPTIVE_CLUSTER_EPS_SCALES,
+    ADAPTIVE_CLUSTER_MIN_SCALES,
+    ADAPTIVE_CLUSTER_RANGE_BINS,
     BEV_RESOLUTION,
     CLUSTER_EPS,
     CLUSTER_MIN_POINTS,
+    CLUSTER_Z_SCALE,
     ENABLE_INTENSITY_COMP,
     EWMA_ALPHA,
     FUSION_WINDOW,
     GROUND_THRESHOLD,
     MAX_RANGE,
     RANGE_ATTENUATION_ALPHA,
+    USE_ADAPTIVE_CLUSTER,
     USE_EWMA_FUSION,
     VOXEL_SIZE,
 )
@@ -41,7 +46,23 @@ class LidarPerceptionPipeline:
         reflectivity_map = build_reflectivity(voxels, voxel_intensity)
         self.maps.append(reflectivity_map)
 
-        clusters = cluster_objects(points, CLUSTER_EPS, CLUSTER_MIN_POINTS)
+        if USE_ADAPTIVE_CLUSTER:
+            clusters = cluster_objects_adaptive(
+                points=points,
+                base_eps=CLUSTER_EPS,
+                base_min_samples=CLUSTER_MIN_POINTS,
+                range_bins=ADAPTIVE_CLUSTER_RANGE_BINS,
+                eps_scales=ADAPTIVE_CLUSTER_EPS_SCALES,
+                min_samples_scales=ADAPTIVE_CLUSTER_MIN_SCALES,
+                z_scale=CLUSTER_Z_SCALE,
+            )
+        else:
+            clusters = cluster_objects(
+                points,
+                CLUSTER_EPS,
+                CLUSTER_MIN_POINTS,
+                z_scale=CLUSTER_Z_SCALE,
+            )
         fused_map, stability_map = fuse_maps(
             list(self.maps),
             use_ewma=USE_EWMA_FUSION,

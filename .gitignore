@@ -1,0 +1,29 @@
+# Python caches
+__pycache__/
+*.py[cod]
+
+# IDE/editor
+.idea/
+.vscode/
+
+# Build artifacts
+cpp/*.exe
+cpp/*.obj
+cpp/*.o
+cpp/*.out
+
+# Generated evaluation/export outputs
+benchmark_results/
+benchmark_results*/
+benchmark_results_quickcheck/
+benchmark_param_sweep/
+benchmark_param_sweep*/
+effectiveness_results/
+kitti_predictions/
+results/
+
+# Local datasets (keep outside git history)
+training/
+data/velodyne_points/bin/
+data/velodyne_points/las/
+data/object/label_2/

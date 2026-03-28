@@ -139,6 +139,41 @@ def discover_input_files(bin_dir: str, pattern: str, limit: int) -> List[Path]:
     return files
 
 
+def resolve_calib_file(calib_dir: str, frame_stem: str) -> Path:
+    calib_root = Path(calib_dir)
+    candidates = []
+
+    # 1) exact stem match (e.g., 0000000000.txt)
+    candidates.append(calib_root / f"{frame_stem}.txt")
+
+    # 2) KITTI canonical 6-digit index (e.g., 000000.txt)
+    if frame_stem.isdigit():
+        frame_idx = int(frame_stem)
+        candidates.append(calib_root / f"{frame_idx:06d}.txt")
+
+    # 3) last 6 chars fallback for mixed naming schemes
+    if len(frame_stem) >= 6 and frame_stem[-6:].isdigit():
+        candidates.append(calib_root / f"{frame_stem[-6:]}.txt")
+
+    # de-duplicate while preserving order
+    seen = set()
+    uniq_candidates = []
+    for p in candidates:
+        key = str(p.resolve()) if p.is_absolute() else str(p)
+        if key not in seen:
+            seen.add(key)
+            uniq_candidates.append(p)
+
+    for path in uniq_candidates:
+        if path.exists():
+            return path
+
+    raise FileNotFoundError(
+        f"Missing calibration file for frame {frame_stem}. Tried: "
+        + ", ".join(str(p) for p in uniq_candidates)
+    )
+
+
 def load_calibration(calib_path: Path) -> Dict[str, np.ndarray]:
     values: Dict[str, np.ndarray] = {}
     with calib_path.open("r", encoding="utf-8") as f:
@@ -519,9 +554,7 @@ def main() -> None:
 
         calib = None
         if use_calib:
-            calib_path = Path(args.calib_dir) / f"{stem}.txt"
-            if not calib_path.exists():
-                raise FileNotFoundError(f"Missing calibration file for frame {stem}: {calib_path}")
+            calib_path = resolve_calib_file(args.calib_dir, stem)
             calib = load_calibration(calib_path)
             if not args.disable_fov_filter:
                 points, intensity = fov_filter_with_calib(points, intensity, calib)
