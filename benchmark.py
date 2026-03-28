@@ -11,17 +11,22 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from src.bev_map import generate_bev
-from src.clustering import cluster_objects
+from src.clustering import cluster_objects, cluster_objects_adaptive
 from src.config import (
+    ADAPTIVE_CLUSTER_EPS_SCALES,
+    ADAPTIVE_CLUSTER_MIN_SCALES,
+    ADAPTIVE_CLUSTER_RANGE_BINS,
     BEV_RESOLUTION,
     CLUSTER_EPS,
     CLUSTER_MIN_POINTS,
+    CLUSTER_Z_SCALE,
     ENABLE_INTENSITY_COMP,
     EWMA_ALPHA,
     FUSION_WINDOW,
     GROUND_THRESHOLD,
     MAX_RANGE,
     RANGE_ATTENUATION_ALPHA,
+    USE_ADAPTIVE_CLUSTER,
     USE_EWMA_FUSION,
     VOXEL_SIZE,
 )
@@ -124,7 +129,23 @@ def run_profiled_frame(file_path, map_history):
     map_history.append(reflectivity_map)
 
     start = perf_counter()
-    clusters = cluster_objects(points, CLUSTER_EPS, CLUSTER_MIN_POINTS)
+    if USE_ADAPTIVE_CLUSTER:
+        clusters = cluster_objects_adaptive(
+            points=points,
+            base_eps=CLUSTER_EPS,
+            base_min_samples=CLUSTER_MIN_POINTS,
+            range_bins=ADAPTIVE_CLUSTER_RANGE_BINS,
+            eps_scales=ADAPTIVE_CLUSTER_EPS_SCALES,
+            min_samples_scales=ADAPTIVE_CLUSTER_MIN_SCALES,
+            z_scale=CLUSTER_Z_SCALE,
+        )
+    else:
+        clusters = cluster_objects(
+            points,
+            CLUSTER_EPS,
+            CLUSTER_MIN_POINTS,
+            z_scale=CLUSTER_Z_SCALE,
+        )
     row["cluster_s"] = perf_counter() - start
     row["clusters_count"] = int(len(clusters))
     row["mean_cluster_size"] = (
