@@ -1,6 +1,25 @@
 from sklearn.cluster import DBSCAN
 import numpy as np
 
+
+def classify_cluster(points):
+    if points.size == 0:
+        return "unknown"
+
+    extent = points.max(axis=0) - points.min(axis=0)
+    height = float(extent[2]) if extent.size > 2 else 0.0
+    width = float(min(extent[0], extent[1])) if extent.size > 1 else 0.0
+    length = float(max(extent[0], extent[1])) if extent.size > 1 else 0.0
+
+    if 1.0 <= height <= 2.4 and 2.0 <= length <= 6.5 and 1.0 <= width <= 3.0:
+        return "vehicle"
+    if 1.2 <= height <= 2.2 and length <= 1.2 and width <= 1.2:
+        return "pedestrian"
+    if 1.0 <= height <= 2.2 and 1.0 <= length <= 2.5 and width <= 1.2:
+        return "cyclist"
+    return "unknown"
+
+
 def cluster_objects(points, eps, min_samples, z_scale=0.25):
 
     if points.shape[0] < min_samples:

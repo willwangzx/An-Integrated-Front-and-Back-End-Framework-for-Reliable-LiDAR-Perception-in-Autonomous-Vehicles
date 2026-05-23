@@ -226,7 +226,7 @@ def evaluate_frame(file_path, map_history, previous_map, previous_centroids, sam
     points, intensity = filter_range(points_raw, intensity, MAX_RANGE)
     row["points_after_range"] = int(points.shape[0])
 
-    points, intensity = remove_ground(points, intensity, GROUND_THRESHOLD)
+    points, intensity, _ = remove_ground(points, intensity, GROUND_THRESHOLD)
     row["points_after_ground"] = int(points.shape[0])
     row["retention_ratio"] = (
         float(points.shape[0] / points_raw.shape[0]) if points_raw.shape[0] else 0.0

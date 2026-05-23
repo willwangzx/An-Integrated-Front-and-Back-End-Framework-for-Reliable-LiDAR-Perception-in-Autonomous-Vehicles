@@ -112,7 +112,7 @@ def run_profiled_frame(file_path, map_history):
     row["points_after_range"] = int(points.shape[0])
 
     start = perf_counter()
-    points, intensity = remove_ground(points, intensity, GROUND_THRESHOLD)
+    points, intensity, _ = remove_ground(points, intensity, GROUND_THRESHOLD)
     row["ground_remove_s"] = perf_counter() - start
     row["points_after_ground"] = int(points.shape[0])
 

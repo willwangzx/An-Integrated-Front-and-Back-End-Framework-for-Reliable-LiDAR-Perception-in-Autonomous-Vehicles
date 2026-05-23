@@ -222,7 +222,7 @@ def preprocess_points(points: np.ndarray, intensity: np.ndarray) -> Tuple[np.nda
     if ENABLE_INTENSITY_COMP:
         intensity = compensate_intensity(points, intensity, RANGE_ATTENUATION_ALPHA)
     points, intensity = filter_range(points, intensity, MAX_RANGE)
-    points, intensity = remove_ground(points, intensity, GROUND_THRESHOLD)
+    points, intensity, _ = remove_ground(points, intensity, GROUND_THRESHOLD)
     return points, intensity
 
 
