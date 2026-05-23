@@ -279,7 +279,7 @@ def run_profiled_frame(file_path, map_history, params):
     voxels, voxel_intensity, voxel_counts = voxelize(points, intensity, params.voxel_size)
     row["voxelize_s"] = perf_counter() - start
     row["voxels_count"] = int(voxels.shape[0])
-    row["mean_voxel_density"] = float(voxel_counts.mean()) if voxel_counts.size else 0.0
+    row["mean_voxel_density"] = float(voxel_counts.mean()) if voxel_counts.size else 0.0  
 
     start = perf_counter()
     reflectivity_map = build_reflectivity(voxels, voxel_intensity)

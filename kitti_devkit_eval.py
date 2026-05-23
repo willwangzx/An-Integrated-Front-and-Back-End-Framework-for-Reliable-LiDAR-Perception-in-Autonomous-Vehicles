@@ -8,6 +8,14 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 
+def default_bash_path() -> str:
+    # Windows: prefer explicit MSYS2 bash path.
+    if os.name == "nt":
+        return r"C:\msys64\usr\bin\bash.exe"
+    # POSIX: rely on shell discovery from PATH.
+    return "bash"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
@@ -41,8 +49,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--bash-path",
-        default=r"C:\msys64\usr\bin\bash.exe",
-        help="Path to MSYS2 bash.exe used to compile/run the evaluator on Windows.",
+        default=default_bash_path(),
+        help=(
+            "Path to bash executable used to run the evaluator. "
+            "Default is MSYS2 bash on Windows, and `bash` on POSIX."
+        ),
     )
     parser.add_argument(
         "--compile",
