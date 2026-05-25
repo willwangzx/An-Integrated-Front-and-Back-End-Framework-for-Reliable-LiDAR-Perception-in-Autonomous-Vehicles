@@ -1,0 +1,87 @@
+# Track only key source/docs assets by default
+*
+
+# Keep git and project docs/entry scripts at repo root
+!.gitignore
+!*.md
+!*.py
+!readme.txt
+
+# Keep key source directories
+!src/
+!src/**
+!tests/
+!tests/**
+!scripts/
+!scripts/**
+!cpp/
+!cpp/**
+!data_processing/
+!data_processing/**
+!mapping/
+!mapping/**
+!matlab/
+!matlab/**
+!rawdatadownload/
+!rawdatadownload/**
+!3D Voxel-Based Reflectivity Field Reconstruction/
+!3D Voxel-Based Reflectivity Field Reconstruction/**
+
+# Keep only lightweight sample data needed in repo
+!data/
+!data/mock_label_2/
+!data/mock_label_2/**
+!data/velodyne_points/
+!data/velodyne_points/timestamps.txt
+!data/velodyne_points/timestamps_start.txt
+!data/velodyne_points/timestamps_end.txt
+
+# Ignore heavy/generated/runtime folders directly
+.venv/
+.venv_openpcdet/
+venv/
+env/
+.vscode/
+.idea/
+__pycache__/
+build/
+dist/
+runs/
+results/
+third_party/
+KITTI_ROOT/
+kitti_predictions_bin/
+kitti_predictions/
+kitti_predictions_openpcdet/
+benchmark_results/
+benchmark_results*/
+benchmark_results_quickcheck/
+benchmark_param_sweep/
+benchmark_param_sweep*/
+effectiveness_results/
+
+# Keep large local dataset artifacts out of git
+data/object/
+data/velodyne_points/bin/
+data/velodyne_points/las/
+training/
+
+# Caches and local temp files
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.egg-info/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# C/C++ build outputs
+cpp/evaluate_object
+cpp/*.exe
+cpp/*.obj
+cpp/*.o
+cpp/*.out

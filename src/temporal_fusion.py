@@ -1,30 +1,25 @@
-from collections import defaultdict
-import numpy as np
-
 def fuse_maps(maps,use_ewma=False,ewma_alpha=0.6):
+    n_frames = max(len(maps), 1)
+    counts = {}
 
-    fusion=defaultdict(list)
+    if use_ewma:
+        fused = {}
+        decay = 1.0 - ewma_alpha
+        for m in maps:
+            for key, value in m.items():
+                if key in fused:
+                    fused[key] = ewma_alpha * value + decay * fused[key]
+                    counts[key] += 1
+                else:
+                    fused[key] = float(value)
+                    counts[key] = 1
+    else:
+        fused_sums = {}
+        for m in maps:
+            for key, value in m.items():
+                fused_sums[key] = fused_sums.get(key, 0.0) + value
+                counts[key] = counts.get(key, 0) + 1
+        fused = {key: (total / counts[key]) for key, total in fused_sums.items()}
 
-    for m in maps:
-
-        for k,v in m.items():
-
-            fusion[k].append(v)
-
-    fused={}
-    stability={}
-    n_frames=max(len(maps),1)
-
-    for k,v in fusion.items():
-
-        values=np.array(v,dtype=np.float32)
-        if use_ewma and values.size>0:
-            ewma=values[0]
-            for val in values[1:]:
-                ewma=ewma_alpha*val+(1-ewma_alpha)*ewma
-            fused[k]=float(ewma)
-        else:
-            fused[k]=float(np.mean(values))
-        stability[k]=float(values.size/n_frames)
-
-    return fused,stability
+    stability = {key: (count / n_frames) for key, count in counts.items()}
+    return fused, stability
